@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using EmployeeLeaveManagement.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeLeaveManagement.Data
@@ -9,5 +10,7 @@ namespace EmployeeLeaveManagement.Data
             : base(options)
         {
         }
+
+        public DbSet<Employee> Employees { get; set; }
     }
 }
