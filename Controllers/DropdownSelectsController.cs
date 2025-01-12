@@ -10,22 +10,22 @@ using EmployeeLeaveManagement.Models;
 
 namespace EmployeeLeaveManagement.Controllers
 {
-    public class EmployeesController : Controller
+    public class DropdownSelectsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public EmployeesController(ApplicationDbContext context)
+        public DropdownSelectsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Employees
+        // GET: DropdownSelects
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Employees.ToListAsync());
+            return View(await _context.DropdownSelects.ToListAsync());
         }
 
-        // GET: Employees/Details/5
+        // GET: DropdownSelects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +33,39 @@ namespace EmployeeLeaveManagement.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
+            var dropdownSelect = await _context.DropdownSelects
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (dropdownSelect == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(dropdownSelect);
         }
 
-        // GET: Employees/Create
+        // GET: DropdownSelects/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Employees/Create
+        // POST: DropdownSelects/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,SelectProperty")] DropdownSelect dropdownSelect)
         {
-            employee.CreatedById = "Admin Id";
-            employee.CreatedOn = DateTime.Now;
-
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
+                _context.Add(dropdownSelect);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(employee);
+            return View(dropdownSelect);
         }
 
-        // GET: Employees/Edit/5
+        // GET: DropdownSelects/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +73,22 @@ namespace EmployeeLeaveManagement.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var dropdownSelect = await _context.DropdownSelects.FindAsync(id);
+            if (dropdownSelect == null)
             {
                 return NotFound();
             }
-            return View(employee);
+            return View(dropdownSelect);
         }
 
-        // POST: Employees/Edit/5
+        // POST: DropdownSelects/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,SelectProperty")] DropdownSelect dropdownSelect)
         {
-            if (id != employee.Id)
+            if (id != dropdownSelect.Id)
             {
                 return NotFound();
             }
@@ -100,14 +97,12 @@ namespace EmployeeLeaveManagement.Controllers
             {
                 try
                 {
-                    employee.ModifiedOn = DateTime.Now;
-                    employee.ModifiedById = "Admin Id";
-                    _context.Update(employee);
+                    _context.Update(dropdownSelect);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.Id))
+                    if (!DropdownSelectExists(dropdownSelect.Id))
                     {
                         return NotFound();
                     }
@@ -118,10 +113,10 @@ namespace EmployeeLeaveManagement.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(employee);
+            return View(dropdownSelect);
         }
 
-        // GET: Employees/Delete/5
+        // GET: DropdownSelects/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,34 +124,34 @@ namespace EmployeeLeaveManagement.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
+            var dropdownSelect = await _context.DropdownSelects
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (dropdownSelect == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(dropdownSelect);
         }
 
-        // POST: Employees/Delete/5
+        // POST: DropdownSelects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee != null)
+            var dropdownSelect = await _context.DropdownSelects.FindAsync(id);
+            if (dropdownSelect != null)
             {
-                _context.Employees.Remove(employee);
+                _context.DropdownSelects.Remove(dropdownSelect);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EmployeeExists(int id)
+        private bool DropdownSelectExists(int id)
         {
-            return _context.Employees.Any(e => e.Id == id);
+            return _context.DropdownSelects.Any(e => e.Id == id);
         }
     }
 }

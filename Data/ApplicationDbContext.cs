@@ -12,5 +12,7 @@ namespace EmployeeLeaveManagement.Data
         }
 
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<DropdownSelect> DropdownSelects { get; set; }
+        public DbSet<DropdownOption> DropdownOptions { get; set; }
     }
 }
