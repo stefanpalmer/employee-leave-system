@@ -11,8 +11,25 @@ namespace EmployeeLeaveManagement.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
+            modelBuilder.Entity<LeaveApplication>()
+                .HasOne(f => f.Status)
+                .WithMany()
+                .HasForeignKey(f => f.StatusId)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+
         public DbSet<Employee> Employees { get; set; }
         public DbSet<DropdownSelect> DropdownSelects { get; set; }
         public DbSet<DropdownOption> DropdownOptions { get; set; }
+        public DbSet<LeaveApplication> LeaveApplications { get; set; }
     }
 }
