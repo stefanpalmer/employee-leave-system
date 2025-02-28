@@ -75,6 +75,98 @@ namespace EmployeeLeaveManagement.Controllers
             return View(leaveApplication);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ApproveLeave(int? id)
+        {
+            var leaveApplication = await _context.LeaveApplications
+                .Include(l => l.Employee)
+                .Include(l => l.Status)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (leaveApplication == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+            return View(leaveApplication);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ApproveLeave(LeaveApplication application)
+        {
+            var approved = _context.DropdownOptions.Include(x => x.DropdownSelect)
+                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Approved")
+                                                    .FirstOrDefault();
+            var leaveApplication = await _context.LeaveApplications
+                .Include(l => l.Employee)
+                .Include(l => l.Status)
+                .FirstOrDefaultAsync(m => m.Id == application.Id);
+
+            if (leaveApplication == null)
+            {
+                return NotFound();
+            }
+
+            leaveApplication.ApprovedOn = DateTime.Now;
+            leaveApplication.ApprovedById = "Admin Id";
+            leaveApplication.StatusId = approved.Id;
+
+            _context.Update(leaveApplication);
+            await _context.SaveChangesAsync();
+
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> RejectLeave(int? id)
+        {
+            var leaveApplication = await _context.LeaveApplications
+                .Include(l => l.Employee)
+                .Include(l => l.Status)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (leaveApplication == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+            return View(leaveApplication);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> RejectLeave(LeaveApplication application)
+        {
+            var rejected = _context.DropdownOptions.Include(x => x.DropdownSelect)
+                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Rejected")
+                                                    .FirstOrDefault();
+            var leaveApplication = await _context.LeaveApplications
+                .Include(l => l.Employee)
+                .Include(l => l.Status)
+                .FirstOrDefaultAsync(m => m.Id == application.Id);
+
+            if (leaveApplication == null)
+            {
+                return NotFound();
+            }
+
+            leaveApplication.ApprovedOn = DateTime.Now;
+            leaveApplication.ApprovedById = "Admin Id";
+            leaveApplication.StatusId = rejected.Id;
+
+            _context.Update(leaveApplication);
+            await _context.SaveChangesAsync();
+
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
         // GET: LeaveApplications/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
