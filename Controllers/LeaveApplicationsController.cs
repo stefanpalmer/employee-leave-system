@@ -22,7 +22,42 @@ namespace EmployeeLeaveManagement.Controllers
         // GET: LeaveApplications
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.LeaveApplications.Include(l => l.Employee).Include(l => l.Status);
+            var pending = _context.DropdownOptions.Include(x => x.DropdownSelect)
+                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Pending")
+                                                    .FirstOrDefault();
+
+            var applicationDbContext = _context.LeaveApplications
+                .Include(l => l.Employee)
+                .Include(l => l.Status)
+                .Where(l => l.StatusId == pending!.Id);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> ApprovedApplications()
+        {
+            var approved = _context.DropdownOptions.Include(x => x.DropdownSelect)
+                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Approved")
+                                                    .FirstOrDefault();
+
+            var applicationDbContext = _context.LeaveApplications
+                .Include(l => l.Employee)
+                .Include(l => l.Status)
+                .Where(l => l.StatusId == approved!.Id);
+
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> RejectedApplications()
+        {
+            var rejected = _context.DropdownOptions.Include(x => x.DropdownSelect)
+                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Rejected")
+                                                    .FirstOrDefault();
+
+            var applicationDbContext = _context.LeaveApplications
+                .Include(l => l.Employee)
+                .Include(l => l.Status)
+                .Where(l => l.StatusId == rejected!.Id);
+
             return View(await applicationDbContext.ToListAsync());
         }
 
