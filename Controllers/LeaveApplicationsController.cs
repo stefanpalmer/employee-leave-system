@@ -22,22 +22,25 @@ namespace EmployeeLeaveManagement.Controllers
         // GET: LeaveApplications
         public async Task<IActionResult> Index()
         {
-            var pending = _context.DropdownOptions.Include(x => x.DropdownSelect)
-                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Pending")
-                                                    .FirstOrDefault();
+            var pending = _context.DropdownOptions
+                .Include(x => x.DropdownSelect)
+                .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Pending")
+                .FirstOrDefault();
 
             var applicationDbContext = _context.LeaveApplications
                 .Include(l => l.Employee)
                 .Include(l => l.Status)
                 .Where(l => l.StatusId == pending!.Id);
+            
             return View(await applicationDbContext.ToListAsync());
         }
 
         public async Task<IActionResult> ApprovedApplications()
         {
-            var approved = _context.DropdownOptions.Include(x => x.DropdownSelect)
-                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Approved")
-                                                    .FirstOrDefault();
+            var approved = _context.DropdownOptions
+                .Include(x => x.DropdownSelect)
+                .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Approved")
+                .FirstOrDefault();
 
             var applicationDbContext = _context.LeaveApplications
                 .Include(l => l.Employee)
@@ -49,9 +52,10 @@ namespace EmployeeLeaveManagement.Controllers
 
         public async Task<IActionResult> RejectedApplications()
         {
-            var rejected = _context.DropdownOptions.Include(x => x.DropdownSelect)
-                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Rejected")
-                                                    .FirstOrDefault();
+            var rejected = _context.DropdownOptions
+                .Include(x => x.DropdownSelect)
+                .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Rejected")
+                .FirstOrDefault();
 
             var applicationDbContext = _context.LeaveApplications
                 .Include(l => l.Employee)
@@ -73,6 +77,7 @@ namespace EmployeeLeaveManagement.Controllers
                 .Include(l => l.Employee)
                 .Include(l => l.Status)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (leaveApplication == null)
             {
                 return NotFound();
@@ -94,13 +99,15 @@ namespace EmployeeLeaveManagement.Controllers
         public async Task<IActionResult> Create(LeaveApplication leaveApplication)
         {
             //var pendingStatus = await _context.DropdownOptions.Include(x => x.DropdownSelect).Where(y => y.Option == "Pending" && y.DropdownSelect.SelectProperty == "Leave Approval Status").FirstOrDefaultAsync();
-            var pendingStatus = await _context.DropdownOptions.Include(x => x.DropdownSelect).FirstOrDefaultAsync(y => y.Option == "Pending" && y.DropdownSelect.SelectProperty == "Leave Approval Status");
+            var pendingStatus = await _context.DropdownOptions
+                .Include(x => x.DropdownSelect)
+                .FirstOrDefaultAsync(y => y.Option == "Pending" && y.DropdownSelect.SelectProperty == "Leave Approval Status");
                        
             leaveApplication.CreatedOn = DateTime.Now;
             leaveApplication.CreatedById = "Admin Id";
             leaveApplication.ApprovedOn = DateTime.Now;
             leaveApplication.ApprovedById = "Admin Id";
-            leaveApplication.StatusId = pendingStatus.Id;
+            leaveApplication.StatusId = pendingStatus!.Id;
 
             _context.Add(leaveApplication);
             await _context.SaveChangesAsync();
@@ -130,9 +137,16 @@ namespace EmployeeLeaveManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> ApproveLeave(LeaveApplication application)
         {
-            var approved = _context.DropdownOptions.Include(x => x.DropdownSelect)
-                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Approved")
-                                                    .FirstOrDefault();
+            var approved = _context.DropdownOptions
+                .Include(x => x.DropdownSelect)
+                .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Approved")
+                .FirstOrDefault();
+
+            var adjustmentOff = _context.DropdownOptions
+                .Include(x => x.DropdownSelect)
+                .Where(y => y.DropdownSelect.SelectProperty == "Adjustment Type" && y.Option == "Negative")
+                .FirstOrDefault();
+
             var leaveApplication = await _context.LeaveApplications
                 .Include(l => l.Employee)
                 .Include(l => l.Status)
@@ -145,9 +159,27 @@ namespace EmployeeLeaveManagement.Controllers
 
             leaveApplication.ApprovedOn = DateTime.Now;
             leaveApplication.ApprovedById = "Admin Id";
-            leaveApplication.StatusId = approved.Id;
+            leaveApplication.StatusId = approved!.Id;
 
             _context.Update(leaveApplication);
+            await _context.SaveChangesAsync();
+
+            var adjustment = new LeaveAdjustmentEntry
+            {
+                EmployeeId = leaveApplication.EmployeeId,
+                NoOfDays = leaveApplication.NoOfDays,
+                LeaveAdjustmentDate = DateTime.Now,
+                LeaveStartDate = leaveApplication.StartDate,
+                LeaveEndDate = leaveApplication.EndDate,
+                AdjustmentTypeId = adjustmentOff.Id
+            };
+
+            _context.Add(adjustment);
+            await _context.SaveChangesAsync();
+
+            var employee = await _context.Employees.FindAsync(leaveApplication.EmployeeId);
+            employee.DaysRemaining = employee.DaysRemaining - leaveApplication.NoOfDays;
+            _context.Update(employee);
             await _context.SaveChangesAsync();
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
@@ -176,9 +208,10 @@ namespace EmployeeLeaveManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> RejectLeave(LeaveApplication application)
         {
-            var rejected = _context.DropdownOptions.Include(x => x.DropdownSelect)
-                                                    .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Rejected")
-                                                    .FirstOrDefault();
+            var rejected = _context.DropdownOptions
+                .Include(x => x.DropdownSelect)
+                .Where(y => y.DropdownSelect.SelectProperty == "Leave Approval Status" && y.Option == "Rejected")
+                .FirstOrDefault();
             var leaveApplication = await _context.LeaveApplications
                 .Include(l => l.Employee)
                 .Include(l => l.Status)
@@ -191,7 +224,7 @@ namespace EmployeeLeaveManagement.Controllers
 
             leaveApplication.ApprovedOn = DateTime.Now;
             leaveApplication.ApprovedById = "Admin Id";
-            leaveApplication.StatusId = rejected.Id;
+            leaveApplication.StatusId = rejected!.Id;
 
             _context.Update(leaveApplication);
             await _context.SaveChangesAsync();
@@ -237,7 +270,7 @@ namespace EmployeeLeaveManagement.Controllers
                 {
                     leaveApplication.ModifiedOn = DateTime.Now;
                     leaveApplication.ModifiedById = "Admin Id";
-                    leaveApplication.StatusId = pendingStatus.Id;
+                    leaveApplication.StatusId = pendingStatus!.Id;
                     _context.Update(leaveApplication);
                     await _context.SaveChangesAsync();
                 }

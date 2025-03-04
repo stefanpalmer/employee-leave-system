@@ -4,6 +4,7 @@ using EmployeeLeaveManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeLeaveManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250301232505_AddLeaveDaysProperties")]
+    partial class AddLeaveDaysProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,41 +117,6 @@ namespace EmployeeLeaveManagement.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("EmployeeLeaveManagement.Models.LeaveAdjustmentEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AdjustmentTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("LeaveAdjustmentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LeaveEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LeaveStartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("NoOfDays")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdjustmentTypeId");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("LeaveAdjustmentEntries");
                 });
 
             modelBuilder.Entity("EmployeeLeaveManagement.Models.LeaveApplication", b =>
@@ -416,25 +384,6 @@ namespace EmployeeLeaveManagement.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("DropdownSelect");
-                });
-
-            modelBuilder.Entity("EmployeeLeaveManagement.Models.LeaveAdjustmentEntry", b =>
-                {
-                    b.HasOne("EmployeeLeaveManagement.Models.DropdownOption", "AdjustmentType")
-                        .WithMany()
-                        .HasForeignKey("AdjustmentTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("EmployeeLeaveManagement.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("AdjustmentType");
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("EmployeeLeaveManagement.Models.LeaveApplication", b =>

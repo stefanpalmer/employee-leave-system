@@ -30,6 +30,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.DateOfBirth)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DaysRemaining)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -53,6 +56,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DaysRemaining)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
