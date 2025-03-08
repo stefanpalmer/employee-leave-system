@@ -1,0 +1,63 @@
+﻿@model IEnumerable<EmployeeLeaveManagement.Models.LeaveAdjustmentEntry>
+
+@{
+    ViewData["Title"] = "Leave Adjustments";
+}
+
+<h1>Leave Adjustments</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NoOfDays)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeaveAdjustmentDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeaveStartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeaveEndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdjustmentType)
+            </th>
+            <th>View</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NoOfDays)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LeaveAdjustmentDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LeaveStartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LeaveEndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdjustmentType.Option)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">View</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

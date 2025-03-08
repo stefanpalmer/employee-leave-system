@@ -1,0 +1,56 @@
+﻿@model IEnumerable<EmployeeLeaveManagement.Models.Employee>
+
+@{
+    ViewData["Title"] = "Days Remaining";
+}
+
+<h1>Days Remaining</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DaysRemaining)
+            </th>
+            <th></th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmployeeNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DaysRemaining)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+                <td>
+                    <a asp-action="AdjustLeaveBalance" asp-route-id="@item.Id">Adjust</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> 

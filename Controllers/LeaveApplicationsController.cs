@@ -162,7 +162,6 @@ namespace EmployeeLeaveManagement.Controllers
             leaveApplication.StatusId = approved!.Id;
 
             _context.Update(leaveApplication);
-            await _context.SaveChangesAsync();
 
             var adjustment = new LeaveAdjustmentEntry
             {
@@ -175,7 +174,6 @@ namespace EmployeeLeaveManagement.Controllers
             };
 
             _context.Add(adjustment);
-            await _context.SaveChangesAsync();
 
             var employee = await _context.Employees.FindAsync(leaveApplication.EmployeeId);
             employee.DaysRemaining = employee.DaysRemaining - leaveApplication.NoOfDays;

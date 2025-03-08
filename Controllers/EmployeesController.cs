@@ -20,7 +20,7 @@ namespace EmployeeLeaveManagement.Controllers
         }
 
         // GET: Employees
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index() 
         {
             return View(await _context.Employees.ToListAsync());
         }
