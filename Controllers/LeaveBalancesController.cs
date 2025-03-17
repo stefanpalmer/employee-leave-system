@@ -66,6 +66,6 @@ namespace EmployeeLeaveManagement.Controllers
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", leaveAdjustmentEntry.EmployeeId);
             return View(leaveAdjustmentEntry);
         }
-
+        
     }
 }
