@@ -15,7 +15,7 @@ namespace EmployeeLeaveManagement.Controllers
 
         public IActionResult Index()
         {
-            return !User.Identity.IsAuthenticated ? this.Redirect("~/identity/account/login") : View();
+            return View();
         }
 
         public IActionResult Privacy()
