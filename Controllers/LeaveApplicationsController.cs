@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmployeeLeaveManagement.Data;
 using EmployeeLeaveManagement.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeLeaveManagement.Controllers
 {
@@ -20,6 +21,7 @@ namespace EmployeeLeaveManagement.Controllers
         }
 
         // GET: LeaveApplications
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var pending = _context.DropdownOptions
@@ -35,6 +37,7 @@ namespace EmployeeLeaveManagement.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ApprovedApplications()
         {
             var approved = _context.DropdownOptions
@@ -50,6 +53,7 @@ namespace EmployeeLeaveManagement.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RejectedApplications()
         {
             var rejected = _context.DropdownOptions
@@ -66,6 +70,7 @@ namespace EmployeeLeaveManagement.Controllers
         }
 
         // GET: LeaveApplications/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -87,18 +92,18 @@ namespace EmployeeLeaveManagement.Controllers
         }
 
         // GET: LeaveApplications/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             return View();
         }
 
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(LeaveApplication leaveApplication)
         {
-            //var pendingStatus = await _context.DropdownOptions.Include(x => x.DropdownSelect).Where(y => y.Option == "Pending" && y.DropdownSelect.SelectProperty == "Leave Approval Status").FirstOrDefaultAsync();
             var pendingStatus = await _context.DropdownOptions
                 .Include(x => x.DropdownSelect)
                 .FirstOrDefaultAsync(y => y.Option == "Pending" && y.DropdownSelect.SelectProperty == "Leave Approval Status");
@@ -111,12 +116,12 @@ namespace EmployeeLeaveManagement.Controllers
 
             _context.Add(leaveApplication);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
            
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", leaveApplication.EmployeeId);
-            return View(leaveApplication);
+            //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", leaveApplication.EmployeeId);
+            return RedirectToAction("Index", "Home");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> ApproveLeave(int? id)
         {
@@ -134,6 +139,7 @@ namespace EmployeeLeaveManagement.Controllers
             return View(leaveApplication);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> ApproveLeave(LeaveApplication application)
         {
@@ -185,6 +191,7 @@ namespace EmployeeLeaveManagement.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> RejectLeave(int? id)
         {
@@ -203,6 +210,7 @@ namespace EmployeeLeaveManagement.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> RejectLeave(LeaveApplication application)
         {
@@ -234,6 +242,7 @@ namespace EmployeeLeaveManagement.Controllers
 
 
         // GET: LeaveApplications/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -250,7 +259,8 @@ namespace EmployeeLeaveManagement.Controllers
             return View(leaveApplication);
         }
 
-        
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, LeaveApplication leaveApplication)
@@ -291,6 +301,7 @@ namespace EmployeeLeaveManagement.Controllers
         }
 
         // GET: LeaveApplications/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -311,6 +322,7 @@ namespace EmployeeLeaveManagement.Controllers
         }
 
         // POST: LeaveApplications/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

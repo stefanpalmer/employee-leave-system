@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmployeeLeaveManagement.Data;
 using EmployeeLeaveManagement.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeLeaveManagement.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DropdownSelectsController : Controller
     {
         private readonly ApplicationDbContext _context;

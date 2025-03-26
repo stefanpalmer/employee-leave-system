@@ -17,40 +17,46 @@
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Employee Leave Management</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Employees" asp-action="Index">Employees</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarLinkAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Admin
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarLinkAdmin">
-                                <li><a class="dropdown-item nav-link" asp-controller="LeaveAdjustmentEntries" asp-action="Index">Leave Entries</a></li>
-                                <li><a class="dropdown-item nav-link" asp-controller="LeaveBalances" asp-action="Index">Days Remaining</a></li>
-                                <li><a class="dropdown-item nav-link" asp-controller="DropdownSelects" asp-action="Index">Dropdown Add</a></li>
-                            </ul>
-                        </li>
+                        @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Employees" asp-action="Index">Employees</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarLinkAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarLinkAdmin">
+                                    <li><a class="dropdown-item nav-link" asp-controller="LeaveAdjustmentEntries" asp-action="Index">Leave Entries</a></li>
+                                    <li><a class="dropdown-item nav-link" asp-controller="LeaveBalances" asp-action="Index">Days Remaining</a></li>
+                                    <li><a class="dropdown-item nav-link" asp-controller="DropdownSelects" asp-action="Index">Dropdown Add</a></li>
+                                </ul>
+                            </li>
+                        }
                         <li class="nav-item dropdown">
                             <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Leave Applications
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLink">
                                 <li><a class=" dropdown-item nav-link" asp-controller="LeaveApplications" asp-action="Create">New</a></li>
-                                <li><a class=" dropdown-item nav-link" asp-controller="LeaveApplications" asp-action="Index">Pending</a></li>
-                                <li><a class="dropdown-item nav-link" asp-controller="LeaveApplications" asp-action="ApprovedApplications">Approved</a></li>
-                                <li><a class="dropdown-item nav-link" asp-controller="LeaveApplications" asp-action="RejectedApplications">Rejected</a></li>
+                                @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                                {
+                                    <li><a class=" dropdown-item nav-link" asp-controller="LeaveApplications" asp-action="Index">Pending</a></li>
+                                    <li><a class="dropdown-item nav-link" asp-controller="LeaveApplications" asp-action="ApprovedApplications">Approved</a></li>
+                                    <li><a class="dropdown-item nav-link" asp-controller="LeaveApplications" asp-action="RejectedApplications">Rejected</a></li>
+                                }
                             </ul>
                         </li>
                     </ul>
                     <div class="d-flex align-items-center">
                         @if (signInManager.IsSignedIn(User))
                         {
-                            <div class="me-3 text-light">
+                            <div class="me-3 text-dark">
                                 @User?.Identity?.Name
                             </div>
 

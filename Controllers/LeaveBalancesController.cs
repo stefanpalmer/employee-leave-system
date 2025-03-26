@@ -1,11 +1,13 @@
 ﻿using EmployeeLeaveManagement.Data;
 using EmployeeLeaveManagement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeLeaveManagement.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class LeaveBalancesController : Controller
     {
         private readonly ApplicationDbContext _context;
