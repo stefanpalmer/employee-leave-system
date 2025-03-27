@@ -1,4 +1,6 @@
 using EmployeeLeaveManagement.Data;
+using EmployeeLeaveManagement.Interfaces;
+using EmployeeLeaveManagement.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +16,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddScoped<ILeaveDaysService, LeaveDaysService>();
 
 builder.Services.AddControllersWithViews();
 

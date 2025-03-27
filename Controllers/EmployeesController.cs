@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EmployeeLeaveManagement.Data;
 using EmployeeLeaveManagement.Models;
 using Microsoft.AspNetCore.Authorization;
+using EmployeeLeaveManagement.Interfaces;
 
 namespace EmployeeLeaveManagement.Controllers
 {
@@ -15,10 +16,12 @@ namespace EmployeeLeaveManagement.Controllers
     public class EmployeesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILeaveDaysService _leaveDaysService;
 
-        public EmployeesController(ApplicationDbContext context)
+        public EmployeesController(ApplicationDbContext context, ILeaveDaysService leaveDaysService)
         {
             _context = context;
+            _leaveDaysService = leaveDaysService;
         }
 
         // GET: Employees
@@ -154,6 +157,12 @@ namespace EmployeeLeaveManagement.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public ActionResult ResetDays()
+        {
+            _leaveDaysService.ResetLeaveDays();
+            return View();
         }
 
         private bool EmployeeExists(int id)
